@@ -156,39 +156,54 @@ html, body, #root {
   overflow: hidden;
 }
 
-/* "Armando el dashboard" (components/app/building-dashboard.tsx): un loop de 6 s. */
-.armando-bar { transform-box: fill-box; transform-origin: bottom; animation: armando-bar 6s var(--ease-out, cubic-bezier(.2,.8,.2,1)) infinite; }
-.armando-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: armando-line 6s ease-in-out infinite; }
-.armando-kpi { transform-box: fill-box; transform-origin: left; animation: armando-kpi 6s ease-out infinite; }
-.armando-shimmer { animation: armando-shimmer 1.6s ease-in-out infinite; }
-.armando-cursor { animation: armando-cursor 6s cubic-bezier(.45,0,.25,1) infinite; }
-.armando-click { opacity: 0; transform-box: fill-box; transform-origin: center; animation: armando-click 6s ease-out infinite; }
-.armando-dots::after { content: ''; display: inline-block; width: 1.2em; text-align: left; animation: armando-dots 1.2s steps(4, end) infinite; }
-
-@keyframes armando-bar { 0%, 8% { transform: scaleY(0); } 26%, 88% { transform: scaleY(1); } 100% { transform: scaleY(0); } }
-@keyframes armando-line { 0%, 30% { stroke-dashoffset: 1; } 52%, 88% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 1; } }
-@keyframes armando-kpi { 0%, 56% { transform: scaleX(0.15); opacity: .35; } 72%, 88% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(0.15); opacity: .35; } }
-@keyframes armando-shimmer { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
-@keyframes armando-cursor {
-  0% { transform: translate(236px, 30px); }
-  15%, 24% { transform: translate(84px, 146px); }
-  40%, 49% { transform: translate(250px, 146px); }
-  65%, 74% { transform: translate(66px, 78px); }
-  100% { transform: translate(236px, 30px); }
+/* "Armando el dashboard" (components/app/building-dashboard.tsx): las piezas llegan desde
+   todas las direcciones y encajan en el plano. Un loop de 10 s. */
+.armando {
+  --armando-a: #2563eb; --armando-b: #f97316; --armando-c: #10b981; --armando-ok: #16a34a;
+  --armando-plano: #60a5fa; --armando-plano-fondo: rgba(96, 165, 250, .07); --armando-sombra: rgba(24, 24, 27, .10);
 }
-@keyframes armando-click {
-  0%, 17% { opacity: 0; transform: scale(.3); }
-  19% { opacity: .35; transform: scale(.6); }
-  23%, 42% { opacity: 0; transform: scale(1.6); }
-  44% { opacity: .35; transform: scale(.6); }
-  48%, 67% { opacity: 0; transform: scale(1.6); }
-  69% { opacity: .35; transform: scale(.6); }
-  73%, 100% { opacity: 0; transform: scale(1.6); }
+.dark .armando {
+  --armando-a: #3b82f6; --armando-b: #ea580c; --armando-c: #059669; --armando-ok: #4ade80;
+  --armando-plano: #3b82f6; --armando-plano-fondo: rgba(59, 130, 246, .09); --armando-sombra: rgba(0, 0, 0, .5);
 }
-@keyframes armando-dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+.armando-tarjeta { fill: var(--card); stroke: var(--border); stroke-width: 1; }
+.armando-skel { fill: var(--muted); }
+.armando-skel-trazo { stroke: var(--muted); }
+.armando-titulo { fill: var(--muted-foreground); opacity: .45; }
+.armando-hueco { fill: var(--armando-plano-fondo); stroke: var(--armando-plano); stroke-width: 1.3; stroke-dasharray: 4 3; animation: armando-hueco 10s ease infinite; }
+.armando-grilla { animation: armando-grilla 10s ease infinite; }
+.armando-pieza { transform-box: view-box; animation: armando-pieza 10s cubic-bezier(.22, .9, .3, 1.12) infinite backwards; }
+.armando-cuerpo { animation: armando-sombra 10s ease infinite backwards; }
+.armando-barra { transform-box: fill-box; transform-origin: bottom; animation: armando-barra 10s cubic-bezier(.3, .9, .3, 1) infinite backwards; }
+.armando-arco { fill: none; stroke-width: 9; animation: armando-arco 10s ease-out infinite backwards; }
+.armando-rank { transform-box: fill-box; transform-origin: left; animation: armando-rank 10s cubic-bezier(.3, .9, .3, 1) infinite backwards; }
+.armando-kpi { transform-box: fill-box; transform-origin: left; animation: armando-kpi 10s cubic-bezier(.3, .9, .3, 1) infinite backwards; }
+.armando-vivo { animation: armando-vivo 10s ease infinite backwards; }
+.armando-latido { transform-box: fill-box; transform-origin: center; animation: armando-latido 1.4s ease-out infinite; }
+.armando-puntos::after { content: ''; display: inline-block; width: 1.2em; text-align: left; animation: armando-puntos 1.2s steps(4, end) infinite; }
 
+@keyframes armando-grilla { 0% { opacity: 0; } 5%, 94% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes armando-hueco { 0%, 2% { opacity: 0; } 8%, 30% { opacity: 1; } 38%, 100% { opacity: 0; } }
+/* Cada pieza entra desde su lado (--dx, --dy), girada, y se acomoda con un rebote corto. */
+@keyframes armando-pieza {
+  0%, 8% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(.9); }
+  12% { opacity: 1; }
+  24%, 94% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(.97); }
+}
+@keyframes armando-sombra { 0%, 22% { filter: drop-shadow(0 10px 14px var(--armando-sombra)); } 30%, 100% { filter: drop-shadow(0 1px 1px var(--armando-sombra)); } }
+@keyframes armando-kpi { 0%, 30% { transform: scaleX(0); opacity: 1; } 40%, 94% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(1); opacity: 0; } }
+@keyframes armando-barra { 0%, 36% { transform: scaleY(0); opacity: 1; } 48%, 94% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+@keyframes armando-arco { 0%, 40% { stroke-dasharray: 0 100; opacity: 1; } 54%, 94% { stroke-dasharray: var(--l) 100; opacity: 1; } 100% { stroke-dasharray: var(--l) 100; opacity: 0; } }
+@keyframes armando-rank { 0%, 46% { transform: scaleX(0); opacity: 1; } 56%, 94% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(1); opacity: 0; } }
+@keyframes armando-vivo { 0%, 58% { opacity: 0; } 64%, 94% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes armando-latido { 0% { transform: scale(1); opacity: .55; } 70%, 100% { transform: scale(2.6); opacity: 0; } }
+@keyframes armando-puntos { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+
+/* Movimiento reducido: el dashboard terminado, quieto. */
 @media (prefers-reduced-motion: reduce) {
-  .armando-bar, .armando-line, .armando-kpi, .armando-shimmer, .armando-cursor, .armando-click, .armando-dots::after { animation: none; }
-  .armando-line { stroke-dashoffset: 0; }
-  .armando-cursor { transform: translate(84px, 146px); }
+  .armando-hueco, .armando-grilla, .armando-pieza, .armando-cuerpo, .armando-barra, .armando-arco, .armando-rank,
+  .armando-kpi, .armando-vivo, .armando-latido, .armando-puntos::after { animation: none; }
+  .armando-hueco { opacity: 0; }
+  .armando-arco { stroke-dasharray: var(--l) 100; }
 }
