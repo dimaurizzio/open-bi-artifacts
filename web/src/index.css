@@ -1,0 +1,194 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+@import "tw-shimmer";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: var(--font-sans);
+    --font-sans: 'Geist Variable', sans-serif;
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+  @keyframes collapsible-down {
+  from {
+    height: 0;
+        }
+  to {
+    height: var(--radix-collapsible-content-height, var(--collapsible-panel-height, auto));
+        }
+    }
+  @keyframes collapsible-up {
+  from {
+    height: var(--radix-collapsible-content-height, var(--collapsible-panel-height, auto));
+        }
+  to {
+    height: 0;
+        }
+    }
+}
+
+:root {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+    --chart-1: oklch(0.87 0 0);
+    --chart-2: oklch(0.556 0 0);
+    --chart-3: oklch(0.439 0 0);
+    --chart-4: oklch(0.371 0 0);
+    --chart-5: oklch(0.269 0 0);
+    --radius: 0.625rem;
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+    --chart-1: oklch(0.87 0 0);
+    --chart-2: oklch(0.556 0 0);
+    --chart-3: oklch(0.439 0 0);
+    --chart-4: oklch(0.371 0 0);
+    --chart-5: oklch(0.269 0 0);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+}
+
+@custom-variant data-open (&:where([data-state="open"], [data-open]:not([data-open="false"])));
+
+@custom-variant data-closed (&:where([data-state="closed"], [data-closed]:not([data-closed="false"])));
+/* La app ocupa exactamente la ventana: los grupos de paneles usan height: 100%
+   y sin esto la página crece con el contenido (y el composer se va al fondo). */
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* "Armando el dashboard" (components/app/building-dashboard.tsx): un loop de 6 s. */
+.armando-bar { transform-box: fill-box; transform-origin: bottom; animation: armando-bar 6s var(--ease-out, cubic-bezier(.2,.8,.2,1)) infinite; }
+.armando-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: armando-line 6s ease-in-out infinite; }
+.armando-kpi { transform-box: fill-box; transform-origin: left; animation: armando-kpi 6s ease-out infinite; }
+.armando-shimmer { animation: armando-shimmer 1.6s ease-in-out infinite; }
+.armando-cursor { animation: armando-cursor 6s cubic-bezier(.45,0,.25,1) infinite; }
+.armando-click { opacity: 0; transform-box: fill-box; transform-origin: center; animation: armando-click 6s ease-out infinite; }
+.armando-dots::after { content: ''; display: inline-block; width: 1.2em; text-align: left; animation: armando-dots 1.2s steps(4, end) infinite; }
+
+@keyframes armando-bar { 0%, 8% { transform: scaleY(0); } 26%, 88% { transform: scaleY(1); } 100% { transform: scaleY(0); } }
+@keyframes armando-line { 0%, 30% { stroke-dashoffset: 1; } 52%, 88% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 1; } }
+@keyframes armando-kpi { 0%, 56% { transform: scaleX(0.15); opacity: .35; } 72%, 88% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(0.15); opacity: .35; } }
+@keyframes armando-shimmer { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+@keyframes armando-cursor {
+  0% { transform: translate(236px, 30px); }
+  15%, 24% { transform: translate(84px, 146px); }
+  40%, 49% { transform: translate(250px, 146px); }
+  65%, 74% { transform: translate(66px, 78px); }
+  100% { transform: translate(236px, 30px); }
+}
+@keyframes armando-click {
+  0%, 17% { opacity: 0; transform: scale(.3); }
+  19% { opacity: .35; transform: scale(.6); }
+  23%, 42% { opacity: 0; transform: scale(1.6); }
+  44% { opacity: .35; transform: scale(.6); }
+  48%, 67% { opacity: 0; transform: scale(1.6); }
+  69% { opacity: .35; transform: scale(.6); }
+  73%, 100% { opacity: 0; transform: scale(1.6); }
+}
+@keyframes armando-dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .armando-bar, .armando-line, .armando-kpi, .armando-shimmer, .armando-cursor, .armando-click, .armando-dots::after { animation: none; }
+  .armando-line { stroke-dashoffset: 0; }
+  .armando-cursor { transform: translate(84px, 146px); }
+}

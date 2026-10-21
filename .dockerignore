@@ -1,0 +1,23 @@
+# Secretos y datos: nunca entran a la imagen.
+.env
+.env.*
+!.env.*.example
+secrets/
+data/
+knowledge-okf/
+
+# Entornos y builds locales (el front se compila dentro de la imagen).
+.venv/
+web/node_modules/
+web/tsconfig.tsbuildinfo
+server/static/app/
+
+# Basura de desarrollo.
+**/__pycache__/
+**/*.pyc
+.pytest_cache/
+.adk/
+.claude/
+*.log
+docs/
+tests/

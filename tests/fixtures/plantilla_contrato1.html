@@ -1,0 +1,117 @@
+<!-- Plantilla de página. Fuentes de ejemplo: "totales" (1 fila: usuarios, usuarios_prev)
+     y "serie" (semana, usuarios). Reemplazá ids, columnas y textos. -->
+<style>
+  .chart-wrap { position: relative; }
+</style>
+
+<header class="dash-header">
+  <h1>Usuarios activos</h1>
+  <p>Usuarios con al menos una sesión. Fuente: tabla de actividad diaria.</p>
+</header>
+
+<section class="dash-grid">
+  <div class="dash-card">
+    <div class="dash-kpi-label">Usuarios en el período</div>
+    <div class="dash-kpi-value" id="kpi-usuarios" data-source="totales" data-field="usuarios"></div>
+    <div class="dash-delta" id="kpi-delta" data-source="totales_delta" data-field="delta"></div>
+  </div>
+</section>
+
+<section class="dash-card dash-span-full">
+  <h3>Usuarios por semana</h3>
+  <p class="dash-sub">Cantidad de usuarios distintos por semana</p>
+  <div class="chart-wrap" id="chart-serie"></div>
+  <details>
+    <summary class="dash-note">Ver tabla</summary>
+    <div class="dash-table-wrap" id="tabla-serie"></div>
+  </details>
+</section>
+
+<script>
+  // Cálculo entre columnas o fuentes: corre en el navegador y su fórmula queda visible.
+  dash.calc('totales_delta', ['totales'], (t) => [{
+    delta: t[0] && t[0].usuarios_prev ? t[0].usuarios / t[0].usuarios_prev - 1 : null,
+  }]);
+
+  function sinDatos(el) {
+    el.replaceChildren();
+    const p = document.createElement('p');
+    p.className = 'dash-note';
+    p.textContent = 'Sin datos';
+    el.appendChild(p);
+  }
+
+  function renderKpis(data) {
+    const t = data.totales && data.totales[0];
+    const d = data.totales_delta && data.totales_delta[0];
+    document.getElementById('kpi-usuarios').textContent = t ? dash.fmt.int(t.usuarios) : '—';
+    const deltaEl = document.getElementById('kpi-delta');
+    deltaEl.textContent = d && d.delta != null ? `${dash.fmt.delta(d.delta)} vs. período anterior` : '';
+    deltaEl.classList.toggle('up', !!d && d.delta > 0);
+    deltaEl.classList.toggle('down', !!d && d.delta < 0);
+  }
+
+  function renderSerie(rows) {
+    const el = document.getElementById('chart-serie');
+    if (!rows || !rows.length) return sinDatos(el);
+    el.replaceChildren();
+    const c = dash.colors;
+    // Ancho real del contenedor en cada render: el visor vuelve a llamar a onData
+    // cuando cambia el ancho, así el gráfico se recalcula en vez de escalarse.
+    const width = Math.max(280, el.clientWidth), height = 260;
+    const m = { top: 12, right: 56, bottom: 28, left: 52 };
+    const parse = (s) => new Date(s + 'T00:00:00');
+    const x = d3.scaleTime().domain(d3.extent(rows, (d) => parse(d.semana))).range([m.left, width - m.right]);
+    const y = d3.scaleLinear().domain([0, d3.max(rows, (d) => d.usuarios)]).nice().range([height - m.bottom, m.top]);
+
+    const svg = d3.select(el).append('svg').attr('class', 'dash-chart').attr('width', width).attr('height', height);
+    svg.append('g').attr('class', 'grid').attr('transform', `translate(${m.left},0)`)
+      .call(d3.axisLeft(y).ticks(5).tickSize(-(width - m.left - m.right)).tickFormat(dash.fmt.compact))
+      .call((g) => g.selectAll('.tick text').attr('x', -8));
+    svg.append('g').attr('transform', `translate(0,${height - m.bottom})`)
+      .call(d3.axisBottom(x).ticks(6).tickFormat((d) => dash.fmt.date(d, 'day')));
+
+    svg.append('path').datum(rows)
+      .attr('fill', c.series[0]).attr('fill-opacity', 0.1)
+      .attr('d', d3.area().x((d) => x(parse(d.semana))).y0(y(0)).y1((d) => y(d.usuarios)));
+    svg.append('path').datum(rows)
+      .attr('fill', 'none').attr('stroke', c.series[0]).attr('stroke-width', 2).attr('stroke-linejoin', 'round')
+      .attr('d', d3.line().x((d) => x(parse(d.semana))).y((d) => y(d.usuarios)));
+
+    // Etiqueta directa solo en el último punto, marcada para trazabilidad.
+    const last = rows[rows.length - 1];
+    svg.append('circle').attr('cx', x(parse(last.semana))).attr('cy', y(last.usuarios)).attr('r', 4)
+      .attr('fill', c.series[0]).attr('stroke', c.surface).attr('stroke-width', 2);
+    svg.append('text').attr('x', x(parse(last.semana)) + 8).attr('y', y(last.usuarios) + 4)
+      .style('fill', c.text).style('font-weight', 600)
+      .attr('data-source', 'serie').attr('data-field', 'usuarios').attr('data-row', rows.length - 1)
+      .text(dash.fmt.compact(last.usuarios));
+
+    // Hover: línea vertical que se engancha a la semana más cercana.
+    const rule = svg.append('line').attr('stroke', c.axis).attr('y1', m.top).attr('y2', height - m.bottom).style('display', 'none');
+    const bisect = d3.bisector((d) => parse(d.semana)).center;
+    svg.append('rect').attr('x', m.left).attr('y', m.top).attr('width', width - m.left - m.right)
+      .attr('height', height - m.top - m.bottom).attr('fill', 'transparent')
+      .on('pointermove', (event) => {
+        const [px] = d3.pointer(event);
+        const d = rows[bisect(rows, x.invert(px))];
+        rule.style('display', null).attr('x1', x(parse(d.semana))).attr('x2', x(parse(d.semana)));
+        dash.tooltip.show(event, `Semana del ${dash.fmt.date(d.semana, 'day')}`,
+          [{ label: 'usuarios', value: dash.fmt.int(d.usuarios), color: c.series[0] }]);
+      })
+      .on('pointerleave', () => { rule.style('display', 'none'); dash.tooltip.hide(); });
+
+    dash.table('#tabla-serie', rows, {
+      source: 'serie',
+      columns: [
+        { field: 'semana', label: 'Semana', format: (v) => dash.fmt.date(v) },
+        { field: 'usuarios', label: 'Usuarios', format: dash.fmt.int },
+      ],
+    });
+  }
+
+  dash.onData((data) => {
+    renderKpis(data);
+    renderSerie(data.serie);
+  });
+</script>

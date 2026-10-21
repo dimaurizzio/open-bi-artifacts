@@ -1,0 +1,71 @@
+/* Estilos base del visor. Los tokens --dash-* los genera el servidor desde tokens.json. */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; background: var(--dash-page); color: var(--dash-text); font-family: var(--dash-font); font-size: 14px; line-height: 1.45; }
+body { padding: 0 0 32px; }
+#dash-filters { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: end; padding: 14px 20px; border-bottom: 1px solid var(--dash-border); background: var(--dash-surface); position: sticky; top: 0; z-index: 5; }
+.dash-filter { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--dash-text2); }
+.dash-filter input, .dash-filter select { font: inherit; font-size: 13px; color: var(--dash-text); background: var(--dash-page); border: 1px solid var(--dash-border); border-radius: 8px; padding: 6px 8px; min-width: 140px; }
+.dash-filter select[multiple] { min-height: 64px; }
+.dash-filter input[type=checkbox] { min-width: 0; width: 18px; height: 18px; }
+#dash-root { padding: 20px; max-width: 1400px; margin: 0 auto; transition: opacity .2s; }
+#dash-root.dash-loading { opacity: .55; }
+#dash-status { position: fixed; right: 12px; bottom: 12px; font-size: 12px; padding: 6px 10px; border-radius: 999px; background: var(--dash-surface); color: var(--dash-text2); border: 1px solid var(--dash-border); }
+.dash-empty { color: var(--dash-muted); padding: 48px; text-align: center; }
+
+/* Encabezado */
+.dash-header { margin: 0 0 20px; }
+.dash-header h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.01em; }
+.dash-header p, .dash-sub { color: var(--dash-text2); margin: 0; }
+h2.dash-section { font-size: 15px; font-weight: 600; margin: 28px 0 12px; }
+
+/* Grilla y tarjetas */
+.dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 16px; }
+.dash-grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+.dash-span-2 { grid-column: span 2; }
+.dash-span-full { grid-column: 1 / -1; }
+@media (max-width: 720px) { .dash-span-2 { grid-column: auto; } .dash-grid.cols-2 { grid-template-columns: 1fr; } }
+.dash-card { background: var(--dash-surface); border: 1px solid var(--dash-border); border-radius: 12px; padding: 16px; min-width: 0; position: relative; }
+.dash-card > h3 { font-size: 13px; font-weight: 600; margin: 0 0 2px; }
+.dash-card > .dash-sub { font-size: 12px; margin-bottom: 10px; }
+.dash-note { font-size: 12px; color: var(--dash-muted); margin-top: 8px; }
+
+/* Cifras */
+.dash-kpi-label { font-size: 12px; color: var(--dash-text2); }
+.dash-kpi-value { font-size: 28px; font-weight: 600; margin: 4px 0 2px; letter-spacing: -0.01em; }
+.dash-hero { font-size: 52px; font-weight: 600; line-height: 1.05; letter-spacing: -0.02em; }
+.dash-delta { font-size: 12px; color: var(--dash-text2); }
+.dash-delta.up { color: var(--dash-up); }
+.dash-delta.down { color: var(--dash-critical); }
+
+/* Gráficos */
+/* Sin width: 100%: el SVG se dibuja al ancho real (en px) y el visor lo redibuja al cambiar el ancho. */
+.dash-chart { display: block; max-width: 100%; overflow: visible; }
+.dash-chart text { fill: var(--dash-muted); font-size: 11px; font-family: var(--dash-font); }
+.dash-chart .domain, .dash-chart .tick line { stroke: var(--dash-grid); }
+.dash-chart .grid line { stroke: var(--dash-grid); stroke-width: 1; }
+.dash-chart .grid .domain { display: none; }
+.dash-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; line-height: 1.3; color: var(--dash-text2); margin: 4px 0 10px; position: static; }
+.dash-legend > span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.dash-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dash-key { display: inline-block; width: 12px; height: 3px; border-radius: 2px; }
+.dash-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; }
+
+/* Tabla */
+.dash-table-wrap { overflow-x: auto; }
+.dash-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.dash-table th { text-align: left; font-weight: 600; color: var(--dash-text2); font-size: 12px; padding: 6px 8px; border-bottom: 1px solid var(--dash-axis); white-space: nowrap; }
+.dash-table td { padding: 6px 8px; border-bottom: 1px solid var(--dash-grid); }
+.dash-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Estados */
+.dash-busy { opacity: .5; pointer-events: none; }
+.dash-hl { outline: 2px solid var(--dash-s1); outline-offset: 2px; border-radius: 4px; }
+.dash-tooltip { position: fixed; z-index: 20; pointer-events: none; background: var(--dash-surface); color: var(--dash-text); border: 1px solid var(--dash-border); border-radius: 8px; padding: 8px 10px; font-size: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.12); max-width: 280px; }
+.dash-tooltip-title { color: var(--dash-text2); margin-bottom: 4px; }
+.dash-tooltip-row { display: flex; align-items: center; gap: 8px; }
+.dash-tooltip-row strong { font-weight: 600; }
+
+/* Modo "de dónde salen los números" */
+body.dash-sources-mode #dash-root [data-source] { outline: 1px dashed color-mix(in srgb, var(--dash-s1) 70%, transparent); outline-offset: 2px; border-radius: 3px; cursor: pointer; }
+body.dash-sources-mode #dash-root [data-source]:hover { outline-style: solid; background: color-mix(in srgb, var(--dash-s1) 10%, transparent); }
+body.dash-sources-mode #dash-filters { opacity: .5; pointer-events: none; }

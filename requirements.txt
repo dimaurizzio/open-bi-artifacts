@@ -1,0 +1,8 @@
+google-adk==2.11.0
+mcp==2.3.0
+litellm==1.105.1
+fastapi==0.141.1
+uvicorn==0.54.0
+python-dotenv==1.2.4
+python-multipart==0.0.32
+google-auth==2.61.0

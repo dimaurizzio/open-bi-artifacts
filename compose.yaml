@@ -1,0 +1,64 @@
+# Producción en un VPS: la app y cloudflared, sin ningún puerto abierto en el host.
+# cloudflared abre la conexión hacia Cloudflare y le pasa el tráfico a la app por
+# la red interna de Docker. Ver docs/despliegue.md.
+#
+#   docker compose up -d --build          (usa .env.prod)
+
+name: agent-dashboards
+
+x-hardening: &hardening
+  restart: unless-stopped
+  read_only: true
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "5"
+
+services:
+  app:
+    <<: *hardening
+    build:
+      context: .
+      args:
+        APP_VERSION: ${APP_VERSION:-dev}
+    image: agent-dashboards:${APP_VERSION:-dev}
+    init: true
+    # APP_ENV elige el archivo: .env.prod en el servidor, .env.local para probar la imagen.
+    env_file: .env.${APP_ENV:-prod}
+    environment:
+      APP_ENV: ${APP_ENV:-prod}
+      DATA_DIR: /data
+      KNOWLEDGE_OKF_DIR: /data/knowledge-okf
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/gcp_credentials
+    secrets:
+      - gcp_credentials
+    volumes:
+      - app-data:/data
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+    stop_grace_period: 30s
+    # Sin "ports": la app no se publica en el host; solo la alcanza cloudflared.
+
+  cloudflared:
+    <<: *hardening
+    image: cloudflare/cloudflared:2026.10.0
+    command: tunnel --no-autoupdate run
+    # TUNNEL_TOKEN va en su propio archivo para que la app no lo vea.
+    env_file:
+      - path: secrets/cloudflared.env
+        required: false  # sin este archivo cloudflared no arranca; la app sí (prueba local)
+    depends_on:
+      app:
+        condition: service_healthy
+
+secrets:
+  gcp_credentials:
+    file: ${GCP_CREDENTIALS_FILE:-./secrets/gcp-service-account.json}
+
+volumes:
+  app-data:

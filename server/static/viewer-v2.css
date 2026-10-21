@@ -1,0 +1,171 @@
+/* Visor del tipo Dashboard, contrato 2: tokens del tema y reglas del kit.
+ * La página usa var(--color-*), var(--ds-*) y var(--font-*); todos siguen al tema. */
+:root {
+  color-scheme: light;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Georgia, Cambria, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --color-fg: #18181b;
+  --color-fg-muted: #71717a;
+  --color-bg: #fafafa;
+  --color-panel: #ffffff;
+  --color-border-line: rgba(24, 24, 27, 0.11);
+  --color-ok: #15803d;
+  --color-warn: #a16207;
+  --color-bad: #b91c1c;
+
+  --ds-text-primary: var(--color-fg);
+  --ds-text-secondary: #52525b;
+  --ds-text-muted: var(--color-fg-muted);
+  --ds-border: rgba(24, 24, 27, 0.13);
+  --ds-surface-popover: #ffffff;
+  --ds-shadow-popover: 0 6px 24px rgba(24, 24, 27, 0.12), 0 1px 3px rgba(24, 24, 27, 0.08);
+  --ds-skeleton: rgba(24, 24, 27, 0.07);
+
+  --ds-chart-1: #2563eb;
+  --ds-chart-2: #f97316;
+  --ds-chart-3: #10b981;
+  --ds-chart-4: #f59e0b;
+  --ds-chart-5: #ec4899;
+  --ds-chart-6: #15803d;
+  --ds-chart-7: #6d28d9;
+  --ds-chart-8: #ef4444;
+  --ds-chart-muted: #d4d4d8;
+  --ds-chart-grid: #e4e4e7;
+  --ds-chart-axis: #d4d4d8;
+  --ds-chart-reference: #a1a1aa;
+  --ds-chart-status-good: #16a34a;
+  --ds-chart-status-warning: #f59e0b;
+  --ds-chart-status-serious: #f97316;
+  --ds-chart-status-critical: #dc2626;
+
+  --ds-radius: 12px;
+  --ds-radius-sm: 8px;
+  --ds-pad-xs: 4px;
+  --ds-pad-sm: 8px;
+  --ds-pad-md: 12px;
+  --ds-pad-lg: 16px;
+  --ds-pad-xl: 24px;
+  --ds-gap-xs: 4px;
+  --ds-gap-sm: 8px;
+  --ds-gap-md: 16px;
+  --ds-gap-lg: 24px;
+  --ds-gap-xl: 40px;
+  --ds-font-size-caption: 12px;
+  --ds-font-size-body: 14px;
+  --ds-font-size-heading: 16px;
+  --ds-font-size-title: 24px;
+  --ds-font-size-display: 40px;
+  --ds-font-weight-regular: 400;
+  --ds-font-weight-medium: 500;
+  --ds-font-weight-bold: 650;
+  --ds-dur-fast: 120ms;
+  --ds-dur-slow: 320ms;
+  --ds-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-fg: #fafafa;
+  --color-fg-muted: #a1a1aa;
+  --color-bg: #09090b;
+  --color-panel: #18181b;
+  --color-border-line: rgba(250, 250, 250, 0.11);
+  --color-ok: #4ade80;
+  --color-warn: #fbbf24;
+  --color-bad: #f87171;
+
+  --ds-text-secondary: #d4d4d8;
+  --ds-border: rgba(250, 250, 250, 0.14);
+  --ds-surface-popover: #27272a;
+  --ds-shadow-popover: 0 8px 28px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
+  --ds-skeleton: rgba(250, 250, 250, 0.08);
+
+  --ds-chart-1: #3b82f6;
+  --ds-chart-2: #ea580c;
+  --ds-chart-3: #059669;
+  --ds-chart-4: #d97706;
+  --ds-chart-5: #f472b6;
+  --ds-chart-6: #22c55e;
+  --ds-chart-7: #a78bfa;
+  --ds-chart-8: #f87171;
+  --ds-chart-muted: #52525b;
+  --ds-chart-grid: #27272a;
+  --ds-chart-axis: #3f3f46;
+  --ds-chart-reference: #71717a;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; background: var(--color-bg); }
+body {
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  font-size: var(--ds-font-size-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* La página: gutter que crece con el ancho. La página lo cambia con #dash-root { --dash-gutter: … }. */
+#dash-root {
+  --dash-gutter: clamp(16px, 3.2vw, 40px);
+  padding: var(--dash-gutter);
+  min-height: 100vh;
+  overflow-wrap: anywhere;
+}
+#dash-root[data-dash-content] :is(b, strong) { font-weight: 700; }
+#dash-root :where(h1, h2, h3, h4, p, ul, ol, figure) { margin-block: 0; }
+#dash-root :where(button, input, select, textarea) { font: inherit; color: inherit; }
+#dash-root :where(svg) { overflow: visible; }
+.dash-empty { color: var(--color-fg-muted); padding: 48px; text-align: center; }
+
+/* Esqueleto: una barra redondeada en lugar de palabras; llena la caja de un gráfico vacío. */
+.dash-skeleton { color: transparent !important; position: relative; }
+.dash-skeleton:empty {
+  display: block;
+  min-height: 1.2em;
+  border-radius: var(--ds-radius-sm);
+  background: var(--ds-skeleton);
+}
+.dash-skeleton:not(:empty)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: min(100%, 4.5em);
+  height: 0.62em;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: var(--ds-skeleton);
+}
+.dash-skeleton > * { visibility: hidden; }
+@media (prefers-reduced-motion: no-preference) {
+  .dash-skeleton:empty, .dash-skeleton:not(:empty)::after { animation: dash-pulse 1.4s ease-in-out infinite; }
+}
+@keyframes dash-pulse { 50% { opacity: 0.45; } }
+
+/* Aviso del visor cuando el código de la página se detuvo. */
+#dash-stopped {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--ds-surface-popover);
+  border: 1px solid var(--ds-border);
+  box-shadow: var(--ds-shadow-popover);
+  font-size: var(--ds-font-size-caption);
+  color: var(--color-fg-muted);
+}
+#dash-stopped::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--color-bad); }
+#dash-stopped[hidden] { display: none; }
+
+/* Resaltado desde Fuentes y modo Datos. */
+.dash-hl { outline: 2px solid var(--ds-chart-1) !important; outline-offset: 2px; border-radius: 4px; }
+body.dash-data-mode #dash-root [data-source] { cursor: pointer; outline: 1px dashed color-mix(in srgb, var(--ds-chart-1) 55%, transparent); outline-offset: 2px; border-radius: 3px; }
+body.dash-data-mode #dash-root [data-source]:hover { outline: 2px solid var(--ds-chart-1); background-color: color-mix(in srgb, var(--ds-chart-1) 8%, transparent); }
+body.dash-data-mode #dash-root table[data-row-key] td:hover { background-color: color-mix(in srgb, var(--ds-chart-1) 14%, transparent); }

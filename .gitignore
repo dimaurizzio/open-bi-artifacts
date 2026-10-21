@@ -1,0 +1,18 @@
+# Configuración y secretos: solo se versionan las plantillas.
+.env
+.env.*
+!.env.*.example
+secrets/
+.adk/
+__pycache__/
+data/
+web/node_modules/
+server/static/app/
+# Generado con los datos de cada instalación (esquema del warehouse, conocimiento).
+knowledge-okf/
+# Material de estudio privado: no se publica.
+docs/privado/
+# Desarrollo local.
+.pytest_cache/
+.claude/
+web/tsconfig.tsbuildinfo

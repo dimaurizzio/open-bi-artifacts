@@ -1,0 +1,13 @@
+# Para probar la imagen en tu máquina sin túnel: publica la app solo en localhost.
+#
+#   APP_ENV=local docker compose -f compose.yaml -f compose.local.yaml up --build app
+#
+# Con APP_ENV=local usa .env.local (las rutas y la credencial las sigue fijando compose.yaml).
+#
+# Como credencial de Google sirve el archivo de `gcloud auth application-default login`:
+#   GCP_CREDENTIALS_FILE=~/.config/gcloud/application_default_credentials.json
+
+services:
+  app:
+    ports:
+      - "127.0.0.1:8765:8765"
