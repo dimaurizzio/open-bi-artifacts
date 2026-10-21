@@ -376,8 +376,8 @@ VENTAS_COLS = [
 def script(project: str, dataset: str) -> str:
     ds = f"`{project}.{dataset}`"
     t = lambda name: f"`{project}.{dataset}.{name}`"  # noqa: E731
-    return f"""-- Demo de agent-dashboards: "Andes Outdoor", tienda online ficticia. Datos sintéticos.
--- Generado por agent_dashboards/demo/seed.py. Se puede volver a correr: reemplaza las tablas.
+    return f"""-- Demo de Open BI Artifacts: "Andes Outdoor", tienda online ficticia. Datos sintéticos.
+-- Generado por `open-bi demo seed`. Se puede volver a correr: reemplaza las tablas.
 
 CREATE SCHEMA IF NOT EXISTS {ds}
 OPTIONS (description = 'Demo: Andes Outdoor, una tienda online ficticia de equipo outdoor, con datos sintéticos de los últimos {DAYS} días.');

@@ -41,7 +41,7 @@ análisis y dashboards (artifacts) que tu equipo abre, filtra y edita.
   <img src="docs/img/demo.gif" alt="El agente arma un dashboard de ventas con KPIs, ventas diarias por canal, embudo de conversión y tablas, y se recorre a pantalla completa" width="900">
 </p>
 <p align="center">
-  <a href="docs/img/demo.mp4"><b>▶ Ver la demo completa (1:26)</b></a>: dos preguntas y un dashboard, con la
+  <a href="docs/img/demo.mp4"><b>▶ Ver la demo completa (1:28)</b></a>: dos preguntas y un dashboard, con la
   <a href="docs/demo.md">tienda de demo</a>. Las esperas del modelo están aceleradas.
 </p>
 
