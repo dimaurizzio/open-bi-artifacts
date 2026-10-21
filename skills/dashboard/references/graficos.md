@@ -26,6 +26,9 @@ Reglas que las recetas ya cumplen y que valen para cualquier gráfico:
   llamala dentro de `dash.onData`, que corre de nuevo cuando cambian los datos o el
   ancho. La caja del gráfico va con `position: relative` (por el tooltip) y un
   `min-height` igual a su alto.
+- **Tooltip.** Usá `tooltip(el, svg)` tal cual y pasale a `mostrar` el punto del dato
+  en unidades del viewBox (`[x(dato), y(dato)]`). No lo posiciones a mano con
+  `d3.pointer` sobre el contenedor ni con `clientX`: la leyenda y la escala lo corren.
 - **Fechas.** Las filas llegan con fechas en texto: convertilas una vez con
   `new Date(fila.fecha)` antes de pasarlas.
 - **Marcas.** El contenedor lleva `data-source` con las fuentes que dibuja, una sola
@@ -79,11 +82,16 @@ function barraRedondeada(x, y, w, h, r, lado) {
   return `M${x},${y + h}v${-(h - r)}a${r},${r} 0 0 1 ${r},${-r}h${w - 2 * r}a${r},${r} 0 0 1 ${r},${r}v${h - r}z`;
 }
 
-// Tooltip compartido: una caja HTML dentro del contenedor.
-function tooltip(el) {
-  const tip = d3.select(el).append('div').attr('class', 'grafico-tip').style('opacity', 0);
+// Tooltip compartido: una caja HTML dentro del contenedor. `mostrar` recibe el punto del
+// dato en unidades del viewBox del <svg> y lo pasa a píxeles del contenedor, así queda
+// pegado al dato aunque haya leyenda arriba o el gráfico esté escalado. Se ancla solo
+// (left/top en 0 y el contenedor posicionado): no depende del CSS de la página.
+function tooltip(el, svg) {
+  if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+  const tip = d3.select(el).append('div').attr('class', 'grafico-tip')
+    .style('position', 'absolute').style('left', '0').style('top', '0').style('opacity', 0);
   return {
-    mostrar(x, y, titulo, lineas) {
+    mostrar([x, y], titulo, lineas) {
       tip.selectAll('*').remove();
       tip.append('div').attr('class', 'grafico-tip-titulo').text(titulo);
       lineas.forEach(([color, nombre, valor]) => {
@@ -92,9 +100,14 @@ function tooltip(el) {
         l.append('span').text(nombre);
         l.append('b').text(valor);
       });
-      const caja = el.getBoundingClientRect();
-      const ancho = tip.node().offsetWidth;
-      tip.style('left', `${Math.min(Math.max(x - ancho / 2, 0), caja.width - ancho)}px`).style('top', `${Math.max(y - tip.node().offsetHeight - 10, 0)}px`).style('opacity', 1);
+      const caja = el.getBoundingClientRect(), dibujo = svg.node().getBoundingClientRect();
+      const k = dibujo.width / svg.node().viewBox.baseVal.width;
+      const px = dibujo.left - caja.left - el.clientLeft + x * k;
+      const py = dibujo.top - caja.top - el.clientTop + y * k;
+      const ancho = tip.node().offsetWidth, alto = tip.node().offsetHeight;
+      const izq = Math.min(Math.max(px - ancho / 2, 0), el.clientWidth - ancho);
+      const arriba = py - alto - 10 >= 0 ? py - alto - 10 : py + 14; // si no entra arriba, va abajo
+      tip.style('transform', `translate(${izq}px, ${arriba}px)`).style('opacity', 1);
     },
     ocultar() { tip.style('opacity', 0); },
   };
@@ -157,13 +170,12 @@ function barrasApiladas(el, filas, { alto = 260, formato = compacto, eventos = [
     svg.append('text').attr('class', 'grafico-nota').attr('x', cx).attr('y', cy - 8).attr('text-anchor', 'middle').text(ev.texto);
   });
 
-  const tip = tooltip(el);
+  const tip = tooltip(el, svg);
   svg.append('g').selectAll('rect').data(tabla).join('rect')
     .attr('x', (d) => x(+d.fecha)).attr('width', x.bandwidth()).attr('y', m.t).attr('height', alto - m.t - m.b)
     .attr('fill', 'transparent')
     .on('mousemove', (ev, d) => {
-      const [px] = d3.pointer(ev, el);
-      tip.mostrar(px, y(d3.sum(series, (s) => d[s])) * el.clientWidth / W, diaMes(d.fecha),
+      tip.mostrar([x(+d.fecha) + x.bandwidth() / 2, y(d3.sum(series, (s) => d[s]))], diaMes(d.fecha),
         [...series].reverse().map((s) => [color.get(s), s, formato.format(d[s])]));
     })
     .on('mouseleave', () => tip.ocultar());
@@ -233,13 +245,13 @@ function lineaComparada(el, filas, { alto = 240, formato = compacto, eventos = [
     svg.append('text').attr('class', 'grafico-final').attr('x', W - m.r + 8).attr('y', y(v) + (i ? 12 : -2))
       .attr('fill', c).text(`${n}: ${formato.format(v)}`);
   });
-  const tip = tooltip(el), punto = svg.append('circle').attr('r', 4).attr('fill', dash.colors[0]).attr('opacity', 0);
+  const tip = tooltip(el, svg), punto = svg.append('circle').attr('r', 4).attr('fill', dash.colors[0]).attr('opacity', 0);
   svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', alto - m.t - m.b).attr('fill', 'transparent')
     .on('mousemove', (ev) => {
-      const [px] = d3.pointer(ev);
+      const [px] = d3.pointer(ev, svg.node()); // en unidades del viewBox
       const d = filas[d3.bisectCenter(filas.map((f) => +f.fecha), +x.invert(px))];
       punto.attr('cx', x(d.fecha)).attr('cy', y(d.actual)).attr('opacity', 1);
-      tip.mostrar(x(d.fecha) * el.clientWidth / W, y(d.actual), diaMes(d.fecha),
+      tip.mostrar([x(d.fecha), y(d.actual)], diaMes(d.fecha),
         [[dash.colors[0], nombres[0], formato.format(d.actual)], ['var(--ds-chart-muted)', nombres[1], d.anterior == null ? '—' : formato.format(d.anterior)]]);
     })
     .on('mouseleave', () => { tip.ocultar(); punto.attr('opacity', 0); });
@@ -276,7 +288,7 @@ function ranking(el, filas, { formato = compacto, altoFila = 30, destacar = 0 } 
 .grafico-leyenda { display: flex; flex-wrap: wrap; gap: var(--ds-gap-sm) var(--ds-gap-md); margin-bottom: var(--ds-gap-sm);
   font-size: var(--ds-font-size-caption); color: var(--color-fg-muted); }
 .grafico-leyenda > span { display: inline-flex; align-items: center; gap: 6px; }
-.grafico-tip { position: absolute; pointer-events: none; z-index: 2; min-width: 9rem;
+.grafico-tip { position: absolute; left: 0; top: 0; pointer-events: none; z-index: 2; min-width: 9rem;
   background: var(--ds-surface-popover); border: 1px solid var(--ds-border); border-radius: var(--ds-radius);
   box-shadow: var(--ds-shadow-popover); padding: var(--ds-pad-xs) var(--ds-pad-sm); font-size: var(--ds-font-size-caption);
   transition: opacity 120ms; }
