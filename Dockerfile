@@ -49,7 +49,7 @@ RUN groupadd --system --gid ${APP_UID} app \
 WORKDIR /app
 COPY --from=deps /opt/venv /opt/venv
 # Solo lo que corre en producción (sin tests, docs ni fuentes del front).
-COPY __init__.py agent.py config.py models.py routing.py user_context.py agent_dashboards/
+COPY __init__.py __main__.py agent.py cli.py config.py models.py routing.py user_context.py agent_dashboards/
 COPY artifacts/ agent_dashboards/artifacts/
 COPY auth/ agent_dashboards/auth/
 COPY demo/ agent_dashboards/demo/

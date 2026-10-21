@@ -7,7 +7,8 @@ Cómo está organizado el código y cómo extenderlo. Para levantar el entorno, 
 ## Estructura
 
 ```
-agent_dashboards/
+open-bi-artifacts/       El paquete de Python agent_dashboards (pip install -e .)
+├── cli.py               Comando open-bi: serve, demo, backup, migrate
 ├── agent.py             Agente raíz: instrucciones, skills, herramientas, callbacks
 ├── models.py            Modelo y esfuerzo por turno, de cualquier proveedor
 ├── config.py            Carga .env.<APP_ENV> y valida la configuración
@@ -33,14 +34,14 @@ agent_dashboards/
 
 ## Tests y chequeos
 
-Desde la carpeta de arriba del proyecto:
+Desde la carpeta del repo:
 
 ```bash
-python -m pytest agent_dashboards/tests
+pytest
 ```
 
 ```bash
-cd agent_dashboards/web && npm run typecheck && npm run build
+cd web && npm run typecheck && npm run build
 ```
 
 El CI (`.github/workflows/ci.yml`) corre lo mismo y construye la imagen de Docker. Los

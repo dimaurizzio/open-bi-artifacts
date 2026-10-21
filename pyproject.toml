@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "open-bi-artifacts"
+version = "0.1.0"
+description = "Analizá datos de BigQuery con IA y convertí las respuestas en dashboards vivos (artifacts)."
+readme = "README.md"
+requires-python = ">=3.13"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Los autores de Open BI Artifacts" }]
+keywords = ["bigquery", "google-adk", "mcp", "dashboards", "bi", "agent"]
+# Las versiones viven en requirements*.txt: las usan también Docker y el CI.
+dynamic = ["dependencies", "optional-dependencies"]
+
+[project.scripts]
+open-bi = "agent_dashboards.cli:main"
+
+[project.urls]
+Repository = "https://github.com/dimaurizzio/open-bi-artifacts"
+Documentation = "https://github.com/dimaurizzio/open-bi-artifacts/tree/main/docs"
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+optional-dependencies.dev = { file = ["requirements-dev.txt"] }
+
+# El paquete se llama agent_dashboards y es la raíz del repo: el clon puede tener
+# cualquier nombre de carpeta.
+[tool.setuptools]
+package-dir = { "agent_dashboards" = "." }
+packages = [
+    "agent_dashboards",
+    "agent_dashboards.artifacts",
+    "agent_dashboards.auth",
+    "agent_dashboards.demo",
+    "agent_dashboards.knowledge",
+    "agent_dashboards.server",
+    "agent_dashboards.warehouse",
+]
+
+[tool.setuptools.package-data]
+agent_dashboards = ["skills/**/*"]
+"agent_dashboards.artifacts" = ["tokens.json"]
+"agent_dashboards.server" = ["static/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# importlib: los tests no dependen del nombre de la carpeta del clon.
+addopts = "--import-mode=importlib"

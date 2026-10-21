@@ -62,8 +62,9 @@ copiar. Las rutas están en las guías.
 - **No desactives las guardas** (SQL de solo lectura, datasets habilitados, límite de
   bytes, permisos) para destrabar algo. Si algo falla, buscá la causa.
 - **Preguntá antes** de crear recursos que cuesten plata o de cambiar permisos de IAM.
-- **La carpeta del repo se llama `agent_dashboards`**, y los comandos de Python se
-  corren desde la carpeta de arriba (`python -m agent_dashboards…`).
+- **Todo se corre desde la carpeta del repo**, con el entorno virtual activado: la app
+  se instala con `pip install -e ".[dev]"` y trae el comando `open-bi` (`open-bi serve`,
+  `open-bi demo seed`, `open-bi demo knowledge`, `open-bi backup`).
 - **En local, entrá por `http://localhost:8765`**, nunca por `127.0.0.1`: el cliente
   OAuth solo acepta la dirección registrada. Fijá `PUBLIC_URL=http://localhost:8765`.
 - **Si la persona ya usa `gcloud` con otra cuenta**, no la pises: usá una configuración
@@ -73,7 +74,7 @@ copiar. Las rutas están en las guías.
 
 | Etapa | Cómo saber que anda |
 | --- | --- |
-| Instalación | `python -m pytest agent_dashboards/tests` pasa y `npm run build` termina sin errores |
+| Instalación | `pytest` pasa y `npm run build` (en `web/`) termina sin errores |
 | Configuración | La app arranca. Si falta algo, el error lista cada variable y para qué sirve |
 | Credenciales del servidor | Al arrancar, el catálogo se sincroniza: el panel Conocimiento muestra las tablas |
 | Login | La persona entra y ve el saludo con su nombre |

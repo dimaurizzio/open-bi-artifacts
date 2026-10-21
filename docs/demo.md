@@ -44,10 +44,10 @@ debajo del TB mensual gratuito.
    Data Viewer*, *BigQuery Job User* y *MCP Tool User*.
 3. **Crear el dataset.** Con el SDK de Google Cloud (`bq` viene con `gcloud`),
    logueado con una cuenta que tenga permisos en el proyecto (`gcloud auth login`),
-   desde la carpeta de arriba del proyecto:
+   desde la carpeta del repo:
 
    ```bash
-   python -m agent_dashboards.demo.seed --project TU_PROYECTO --run
+   open-bi demo seed --project TU_PROYECTO --run
    ```
 
    Sin `--run` imprime el SQL, para pegarlo en la consola de BigQuery.
@@ -67,11 +67,11 @@ debajo del TB mensual gratuito.
    joins):
 
    ```bash
-   python -m agent_dashboards.demo.knowledge --project TU_PROYECTO --curator vos@tudominio.com
+   open-bi demo knowledge --project TU_PROYECTO --curator vos@tudominio.com
    ```
 
    El curador tiene que estar en `ADMIN_EMAILS` o `KNOWLEDGE_CURATORS`. Si la app
-   corre en Docker: `docker compose exec app python -m agent_dashboards.demo.knowledge …`.
+   corre en Docker: `docker compose exec app python -m agent_dashboards demo knowledge …`.
 
 Las advertencias nombran fechas relativas al día en que se cargan. Si volvés a
 correr el seed otro día, las fechas se corren: deprecá esas entradas desde el

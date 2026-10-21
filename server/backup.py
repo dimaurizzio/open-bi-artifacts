@@ -3,7 +3,7 @@
 Las bases SQLite se copian con la API de backup de SQLite (consistente aunque la
 app esté escribiendo); los artifacts y el bundle OKF se copian tal cual.
 
-    python -m agent_dashboards.server.backup /data/backups [--keep 14]
+    open-bi backup /data/backups [--keep 14]
 """
 
 from __future__ import annotations

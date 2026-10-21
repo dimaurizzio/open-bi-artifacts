@@ -166,7 +166,7 @@ cualquiera que entra ve lo que ve el servidor.
 | --- | --- |
 | Ver logs | `docker compose logs -f app` |
 | Actualizar | `git pull` y `docker compose up -d --build` |
-| Backup | `docker compose exec app python -m agent_dashboards.server.backup /data/backups` |
+| Backup | `docker compose exec app python -m agent_dashboards backup /data/backups` |
 | Sacar un backup del container | `docker compose cp app:/data/backups ./backups` |
 | Reiniciar | `docker compose restart app` |
 
@@ -175,7 +175,7 @@ la app andando), los artifacts y el bundle OKF, y conserva los últimos 14. Para
 hacerlo todas las noches, un cron del VPS:
 
 ```
-0 3 * * * cd /ruta/al/proyecto && docker compose exec -T app python -m agent_dashboards.server.backup /data/backups
+0 3 * * * cd /ruta/al/proyecto && docker compose exec -T app python -m agent_dashboards backup /data/backups
 ```
 
 Guardá una copia fuera del VPS: un backup en el mismo disco no protege de perder

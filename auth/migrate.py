@@ -4,9 +4,9 @@ Antes del login todo quedaba a nombre de DEFAULT_USER_ID. Esto mueve chats,
 dashboards, artifacts viejos y la autoría del conocimiento al mail nuevo. Correrlo
 con el servidor apagado:
 
-    python -m agent_dashboards.auth.migrate ana@empresa.com            # desde DEFAULT_USER_ID
-    python -m agent_dashboards.auth.migrate ana@empresa.com --from ana
-    python -m agent_dashboards.auth.migrate ana@empresa.com --dry-run
+    open-bi migrate ana@empresa.com            # desde DEFAULT_USER_ID
+    open-bi migrate ana@empresa.com --from ana
+    open-bi migrate ana@empresa.com --dry-run
 """
 
 from __future__ import annotations

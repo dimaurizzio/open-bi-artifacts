@@ -21,8 +21,8 @@ Funciona en el sandbox gratuito de BigQuery (sin facturación): solo usa
 días, porque el sandbox borra las particiones y tablas de más de 60 días. Para
 refrescar la demo, se vuelve a correr.
 
-    python -m agent_dashboards.demo.seed --project mi-proyecto            # imprime el SQL
-    python -m agent_dashboards.demo.seed --project mi-proyecto --run      # lo corre con `bq`
+    open-bi demo seed --project mi-proyecto            # imprime el SQL
+    open-bi demo seed --project mi-proyecto --run      # lo corre con `bq`
 """
 
 from __future__ import annotations

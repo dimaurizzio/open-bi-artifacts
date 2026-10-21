@@ -4,7 +4,7 @@ Carga entradas compartidas y aprobadas (definiciones, reglas de filtro, adverten
 joins) para que la demo muestre cómo el agente las usa. Va con el dataset que crea
 `demo.seed`, y ese dataset tiene que estar en WAREHOUSE_DATASETS.
 
-    python -m agent_dashboards.demo.knowledge --project mi-proyecto --curator vos@empresa.com
+    open-bi demo knowledge --project mi-proyecto --curator vos@empresa.com
 """
 
 from __future__ import annotations

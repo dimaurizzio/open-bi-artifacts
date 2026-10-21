@@ -18,11 +18,11 @@ cómo extenderlo: [docs/desarrollo.md](docs/desarrollo.md).
 ## Antes de abrir el PR
 
 ```bash
-python -m pytest agent_dashboards/tests
+pytest
 ```
 
 ```bash
-cd agent_dashboards/web && npm run typecheck && npm run build
+cd web && npm run typecheck && npm run build
 ```
 
 - Sumá o ajustá tests para lo que cambiaste.

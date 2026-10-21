@@ -1,8 +1,8 @@
 """Servidor de la app: chat con el agente (ADK Runner + SSE), API de artifacts y visor.
 
-Correr desde C:\\dev\\adk-workspace:
+Correr desde la carpeta del repo, con el entorno activado:
 
-    .venv\\Scripts\\python -m uvicorn agent_dashboards.server.app:app --port 8000
+    open-bi serve
 """
 
 from __future__ import annotations

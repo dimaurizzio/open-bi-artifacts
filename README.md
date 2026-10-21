@@ -49,6 +49,49 @@ Se instala en tu propio servidor: tus datos no salen de tu proyecto de Google
 Cloud, salvo lo que el modelo necesita ver para responder. Aprende lo que el equipo
 sabe de sus datos y lo usa en cada respuesta.
 
+<details>
+<summary><b>🇬🇧 In English</b></summary>
+
+<br>
+
+**Open BI Artifacts** is a self-hosted AI analyst for BigQuery, built with
+[Google ADK](https://google.github.io/adk-docs/). Ask questions in plain language: the
+agent queries your warehouse through Google's remote BigQuery MCP server, with
+read-only SQL, and turns the answers into live dashboards (artifacts) your team can
+open, filter and edit.
+
+- **Read-only by design.** Guards reject any SQL that writes, datasets that aren't
+  enabled and queries that scan too many bytes. Each person can query with their own
+  Google account.
+- **Live dashboards.** d3 charts, filters and tables that refresh on open. Every number
+  links to the query behind it, and the SQL is editable and versioned.
+- **Team knowledge base.** Definitions, filter rules and caveats with authors,
+  approvals and expiry. The agent reads them before picking a table, and exports them
+  as an [OKF](https://okf.md) bundle.
+- **Any model.** Anthropic by default, plus OpenAI or Gemini through LiteLLM or native
+  ADK, selectable per message along with the reasoning effort.
+- **Easy to run.** Google login, projects with roles, hardened Docker and Cloudflare
+  Tunnel (no open ports).
+
+The fastest way to install it is to hand [`AGENTS.md`](AGENTS.md) to your coding agent
+(Claude Code, Codex, Gemini CLI, Cursor…): it covers setup, deployment and how to
+guide your users. To do it by hand:
+
+```bash
+git clone https://github.com/dimaurizzio/open-bi-artifacts.git && cd open-bi-artifacts
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+cd web && npm ci && npm run build && cd ..
+cp .env.local.example .env.local   # fill in the values, see docs/configuracion.md
+open-bi serve                       # http://localhost:8765
+```
+
+The UI, the docs and the agent's answers are in Spanish (Rioplatense). The agent's
+language is set in its instruction (`INSTRUCTION` in `agent.py`). Contributions in
+English are welcome.
+
+</details>
+
 ## Instalalo con tu agente de código
 
 > [!TIP]
@@ -65,7 +108,7 @@ sabe de sus datos y lo usa en cada respuesta.
 ```text
 Quiero instalar Open BI Artifacts, una plataforma open source para analizar datos y crear dashboards (artifacts) con IA sobre BigQuery: https://github.com/dimaurizzio/open-bi-artifacts
 
-1. Cloná el repo en una carpeta llamada agent_dashboards (el nombre importa) y leé AGENTS.md: tiene el orden de lectura, las reglas y cómo verificar cada paso.
+1. Cloná el repo y leé AGENTS.md: tiene el orden de lectura, las reglas y cómo verificar cada paso.
 2. Antes de tocar nada, haceme las preguntas que indica AGENTS.md.
 3. Instalalo y dejalo andando: hacé vos todo lo que se hace desde la terminal y, para cada paso en una consola web (Google Cloud, Cloudflare), decime exactamente dónde ir y qué completar.
 4. No me pidas claves ni secretos por el chat: decime en qué archivo pegarlos.
@@ -192,11 +235,8 @@ BigQuery (alcanza el sandbox), un cliente OAuth de Google y una clave de modelo
 cliente de Google y los problemas frecuentes, está en
 [docs/primeros-pasos.md](docs/primeros-pasos.md).
 
-La carpeta del repo tiene que llamarse `agent_dashboards`, y los comandos de Python se
-corren desde la carpeta de arriba:
-
 ```bash
-git clone https://github.com/dimaurizzio/open-bi-artifacts.git agent_dashboards
+git clone https://github.com/dimaurizzio/open-bi-artifacts.git && cd open-bi-artifacts
 ```
 
 ```bash
@@ -204,18 +244,18 @@ python -m venv .venv
 ```
 
 Activá el entorno (`source .venv/bin/activate`, o `.venv\Scripts\activate` en
-Windows) e instalá:
+Windows) e instalá la app, que trae el comando `open-bi`:
 
 ```bash
-pip install -r agent_dashboards/requirements-dev.txt
+pip install -e ".[dev]"
 ```
 
 ```bash
-cd agent_dashboards/web && npm ci && npm run build && cd ../..
+cd web && npm ci && npm run build && cd ..
 ```
 
 ```bash
-cp agent_dashboards/.env.local.example agent_dashboards/.env.local
+cp .env.local.example .env.local
 ```
 
 Completá `.env.local` ([todas las variables](docs/configuracion.md)), iniciá sesión en
@@ -226,7 +266,7 @@ gcloud auth application-default login
 ```
 
 ```bash
-python -m uvicorn agent_dashboards.server.app:app --port 8765
+open-bi serve
 ```
 
 Abrí http://localhost:8765 y entrá con tu cuenta de Google.
@@ -271,11 +311,11 @@ Google y backups: [docs/despliegue.md](docs/despliegue.md).
 ## Tests
 
 ```bash
-python -m pytest agent_dashboards/tests
+pytest
 ```
 
 ```bash
-cd agent_dashboards/web && npm run typecheck
+cd web && npm run typecheck
 ```
 
 ## Contribuir

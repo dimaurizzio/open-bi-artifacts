@@ -75,7 +75,7 @@ MODEL_ROUTES = {
 }
 
 # Id de usuario de antes del login. Solo lo usa la migración de datos
-# (`python -m agent_dashboards.auth.migrate`) para pasarlos a una cuenta de Google.
+# (`open-bi migrate`) para pasarlos a una cuenta de Google.
 DEFAULT_USER_ID = os.getenv("DEFAULT_USER_ID", "")
 
 

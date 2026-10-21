@@ -15,15 +15,12 @@ ejemplo, seguí esta guía y en el paso 2 usá la [demo](demo.md).
 
 ## 1. Instalar
 
-El código es un paquete de Python llamado `agent_dashboards`: la carpeta tiene que
-llamarse así, y los comandos de Python se corren desde la carpeta de arriba.
-
 ```bash
-mkdir open-bi-artifacts && cd open-bi-artifacts
+git clone https://github.com/dimaurizzio/open-bi-artifacts.git
 ```
 
 ```bash
-git clone https://github.com/dimaurizzio/open-bi-artifacts.git agent_dashboards
+cd open-bi-artifacts
 ```
 
 ```bash
@@ -31,15 +28,18 @@ python -m venv .venv
 ```
 
 Activá el entorno (`source .venv/bin/activate`, o `.venv\Scripts\activate` en
-Windows) e instalá las dependencias:
+Windows) e instalá la app con sus dependencias. Queda disponible el comando
+`open-bi`:
 
 ```bash
-pip install -r agent_dashboards/requirements-dev.txt
+pip install -e ".[dev]"
 ```
 
 ```bash
-cd agent_dashboards/web && npm ci && npm run build && cd ../..
+cd web && npm ci && npm run build && cd ..
 ```
+
+Todos los comandos que siguen se corren desde la carpeta del repo.
 
 ## 2. Elegir los datos
 
@@ -89,10 +89,10 @@ proyecto u otro:
 ## 5. Configurar
 
 ```bash
-cp agent_dashboards/.env.local.example agent_dashboards/.env.local
+cp .env.local.example .env.local
 ```
 
-Completá en `agent_dashboards/.env.local`:
+Completá en `.env.local`:
 
 ```bash
 ANTHROPIC_API_KEY=sk-ant-...
@@ -108,11 +108,12 @@ Todas las variables están en [configuracion.md](configuracion.md).
 
 ## 6. Arrancar
 
-Desde la carpeta de arriba del proyecto:
-
 ```bash
-python -m uvicorn agent_dashboards.server.app:app --port 8765
+open-bi serve
 ```
+
+Con `--port` cambiás el puerto y con `--env demo` usás `.env.demo` en vez de
+`.env.local` (por ejemplo, para tener la demo aparte de tus datos).
 
 Abrí **http://localhost:8765** (no `127.0.0.1`: el cliente de Google solo acepta la
 dirección que registraste) y entrá con tu cuenta.
@@ -126,7 +127,7 @@ Para trabajar en el front con recarga en vivo, dejá el backend corriendo y en o
 terminal:
 
 ```bash
-cd agent_dashboards/web && npm run dev
+cd web && npm run dev
 ```
 
 Queda en http://localhost:5173, con proxy a la API.

@@ -105,4 +105,4 @@ python -c "import secrets; print(secrets.token_urlsafe(48))"
 | Variable | Default | Qué hace |
 | --- | --- | --- |
 | `APP_ENV` | `local` | Qué archivo `.env.<APP_ENV>` se carga |
-| `DEFAULT_USER_ID` | | Solo para migrar datos de una instalación anterior al login (`python -m agent_dashboards.auth.migrate`) |
+| `DEFAULT_USER_ID` | | Solo para migrar datos de una instalación anterior al login (`open-bi migrate <mail>`) |

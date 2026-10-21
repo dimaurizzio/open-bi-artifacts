@@ -16,3 +16,7 @@ docs/privado/
 .pytest_cache/
 .claude/
 web/tsconfig.tsbuildinfo
+
+# Instalación con pip install -e .
+*.egg-info/
+build/
