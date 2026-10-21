@@ -89,3 +89,18 @@ def test_turn_model_uses_thinking_level_for_native_gemini(monkeypatch):
     assert thinking.thinking_level == types.ThinkingLevel.MEDIUM
     assert thinking.thinking_budget is None
     assert fake.seen[0].config.labels is None
+
+
+def test_anthropic_gets_prompt_cache_marks_and_other_providers_dont():
+    args = models.litellm_args(OPUS, "medium")
+    assert args["reasoning_effort"] == "medium"
+    points = args["cache_control_injection_points"]
+    assert {"location": "message", "role": "system", "control": {"type": "ephemeral"}} in points
+    assert {"location": "message", "index": -1, "control": {"type": "ephemeral"}} in points
+    assert "cache_control_injection_points" not in models.litellm_args("openai/gpt-4o", None)
+    assert models.litellm_args("openai/gpt-4o", None) == {}
+
+
+def test_turn_model_builds_the_anthropic_backend_with_cache():
+    backend = models.TurnModel(model=HAIKU)._backend(HAIKU, "low")
+    assert backend._additional_args["cache_control_injection_points"]

@@ -141,7 +141,14 @@ chat no muestra. Hay dos razones:
 - **Razonamiento preservado.** Los modelos que atan su razonamiento al prompt (como los
   5.5 de Anthropic) rechazan el historial si el prompt de sistema o las herramientas
   cambiaron desde que lo generaron.
-- **Caché de prompts.** Un prefijo estable se reutiliza de un turno al otro.
+- **Caché de prompts.** Un prefijo estable se reutiliza de un turno al otro. Con
+  Anthropic, `TurnModel` marca dos puntos de caché (`litellm_args` en `models.py`):
+  después del prompt de sistema, que cubre también las herramientas, y en el último
+  mensaje. Así cada llamada lee de la caché todo lo que mandó la anterior, a un décimo
+  del precio. En una conversación de prueba, el 84 % del prompt salió de la caché.
+  OpenAI cachea solo, sin marcas. La caché dura 5 minutos desde el último uso y es por
+  modelo: si la persona cambia de modelo o de esfuerzo a mitad del chat, la próxima
+  llamada paga el prompt completo.
 
 Por eso las herramientas de dashboards están declaradas desde el primer turno. Lo que
 antes se lograba activándolas con la skill, que el agente lea las reglas antes de

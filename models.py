@@ -48,6 +48,15 @@ EFFORT_NAMES = {
 # Niveles de razonamiento de Gemini directo (types.ThinkingLevel); no tiene xhigh ni max.
 _GEMINI_LEVELS = ("minimal", "low", "medium", "high")
 
+# Caché de prompts de Anthropic: sin estas marcas no cachea nada. Una después del system
+# (cubre también las herramientas, que van antes) y otra en el último mensaje, así cada
+# pedido lee de la caché todo lo que mandó el anterior. Las lecturas cuestan un décimo.
+# OpenAI cachea solo y Gemini tiene su propia caché, por eso van solo a Anthropic.
+_ANTHROPIC_CACHE_POINTS = [
+    {"location": "message", "role": "system", "control": {"type": "ephemeral"}},
+    {"location": "message", "index": -1, "control": {"type": "ephemeral"}},
+]
+
 
 @dataclass(frozen=True)
 class ModelChoice:
@@ -137,5 +146,13 @@ class TurnModel(LiteLlm):
 
                 self._backends[key] = Gemini(model=model)
             else:
-                self._backends[key] = LiteLlm(model=model, **({"reasoning_effort": effort} if effort else {}))
+                self._backends[key] = LiteLlm(model=model, **litellm_args(model, effort))
         return self._backends[key]
+
+
+def litellm_args(model: str, effort: str | None) -> dict[str, Any]:
+    """Lo que recibe LiteLLM además del modelo: el effort y, con Anthropic, la caché."""
+    args: dict[str, Any] = {"reasoning_effort": effort} if effort else {}
+    if model.startswith("anthropic/"):
+        args["cache_control_injection_points"] = _ANTHROPIC_CACHE_POINTS
+    return args
